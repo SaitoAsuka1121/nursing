@@ -218,9 +218,5 @@ const sendBack = (val: boolean) => {
   height: 44px;
   background-color: #f5f7f9;
 }
-.content{
-  margin-left: 20px;
-  width: 1678px;
-  height: 770px;
-}
+
 </style>
