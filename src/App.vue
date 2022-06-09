@@ -4,12 +4,13 @@
 import {provide } from 'vue'
 import {NMessageProvider} from "naive-ui";
 import Login from './view/Login/Login.vue'
+import Menu from "./view/Admin/components/Menu.vue";
 
 </script>
 
 <template>
   <n-message-provider>
-      <router-view/>
+      <Menu><router-view /></Menu>
   </n-message-provider>
 </template>
 

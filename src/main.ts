@@ -7,9 +7,11 @@ import axios from "./ts/request"
 import * as echarts from 'echarts'
 // @ts-ignore
 import vueKinesis from 'vue-kinesis'
+import store from './store'
 const vue= createApp(App)
 vue.config.globalProperties.$axios=axios
 vue.config.globalProperties.$echarts=echarts
 vue.use(router)
+vue.use(store)
 vue.use(vueKinesis)
 vue.mount('#app')

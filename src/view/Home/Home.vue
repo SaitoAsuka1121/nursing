@@ -1,9 +1,13 @@
 <script setup lang="ts">
 import {ref, reactive, onMounted, inject,getCurrentInstance } from 'vue'
 import * as echarts from 'echarts'
+import {useStore} from "vuex";
 let echart = echarts
+
 onMounted(()=>{
   init();
+  const store = useStore()
+  store.commit('selectKey','statistics')
 })
 function init(){
 
@@ -107,7 +111,6 @@ function init(){
     <div class="content">
       <div class="age-box">
         <div id="age" class="age">
-
         </div>
       </div>
     </div>
@@ -115,7 +118,6 @@ function init(){
       <div class="chart" id="chart">
       </div>
     </div>
-
   </div>
 
 </template>

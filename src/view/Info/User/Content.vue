@@ -2,6 +2,8 @@
 import {ref, reactive} from 'vue'
 import { FlashOutline } from '@vicons/ionicons5'
 import MyNDataTable from "./MyNDataTable.vue";
+const value = ref();
+defineProps<{ input_name: string }>()
 </script>
 <template>
 <div class="content">
@@ -10,8 +12,8 @@ import MyNDataTable from "./MyNDataTable.vue";
     <div class="input">
       <n-space vertical>
         <n-input-group>
-          <n-input-group-label>用户姓名</n-input-group-label>
-          <n-input round placeholder="搜索" :style="{ width: '33%' }">
+          <n-input-group-label>{{ input_name }}</n-input-group-label>
+          <n-input round placeholder="搜索" :style="{ width: '33%' }" :value="value" :autofocus="true">
             <template #prefix>
               <n-icon :component="FlashOutline" />
             </template>
@@ -22,7 +24,6 @@ import MyNDataTable from "./MyNDataTable.vue";
     <div class="input-button">
       <n-button>搜索</n-button>
     </div>
-
   </div>
     <div class="data">
       <MyNDataTable/>
@@ -68,6 +69,6 @@ import MyNDataTable from "./MyNDataTable.vue";
 }
 .data{
   position: relative;
-  margin-top: 30px;
+  margin-top: 80px;
 }
 </style>

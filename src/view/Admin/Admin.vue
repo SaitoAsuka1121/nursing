@@ -6,7 +6,7 @@ import Home from "../Home/Home.vue"
 </script>
 <template>
   <div class="nav">
-    <Menu><Home/></Menu>
+    <Home/>
   </div>
 </template>
 <style scoped>

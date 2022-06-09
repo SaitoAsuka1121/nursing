@@ -1,4 +1,4 @@
-<script lang="ts">
+<script setup lang="ts">
 import { h, defineComponent } from 'vue'
 import { NTag, NButton, useMessage } from 'naive-ui'
 import type { DataTableColumns } from 'naive-ui'
@@ -8,24 +8,13 @@ type RowData = {
   name: string
   age: number
   address: string
-  tags: string[]
+  sex: string
 }
 
-const createColumns = ({
-                         sendMail
-                       }: {
-  sendMail: (rowData: RowData) => void
-}): DataTableColumns<RowData> => {
+const createColumns = ({sendMail}: { sendMail: (rowData: RowData) => void }): DataTableColumns<RowData> => {
   return [
     {
       type: 'selection'
-    },
-    {
-      type: 'expand',
-      expandable: (rowData) => rowData.name !== 'Jim Green',
-      renderExpand: (rowData) => {
-        return `${rowData.name} is a good guy.`
-      }
     },
     {
       title: 'Name',
@@ -40,25 +29,22 @@ const createColumns = ({
       key: 'address'
     },
     {
-      title: 'Tags',
-      key: 'tags',
-      render (row) {
-        const tags = row.tags.map((tagKey) => {
-          return h(
-              NTag,
-              {
-                style: {
-                  marginRight: '6px'
-                },
-                type: 'info',
-                bordered: false
+      title: 'Sex',
+      key: 'sex',
+      render(row){
+        return h(
+            NTag,
+            {
+              style: {
+                marginRight: '6px'
               },
-              {
-                default: () => tagKey
-              }
-          )
-        })
-        return tags
+              type: 'info',
+              bordered: false
+            },
+            {
+              default: () => row.sex
+            }
+        )
       }
     },
     {
@@ -71,59 +57,143 @@ const createColumns = ({
               size: 'small',
               onClick: () => sendMail(row)
             },
-            { default: () => 'Send Email' }
+            { default: () => '查看' }
         )
       }
     }
   ]
 }
 
-const createData = (): RowData[] => [
+const message = useMessage()
+const data = [
   {
     key: 0,
     name: 'John Brown',
     age: 32,
     address: 'New York No. 1 Lake Park',
-    tags: ['nice', 'developer']
+    sex: '男'
   },
   {
     key: 1,
     name: 'Jim Green',
     age: 42,
     address: 'London No. 1 Lake Park',
-    tags: ['wow']
+    sex: '男'
   },
   {
     key: 2,
     name: 'Joe Black',
     age: 32,
     address: 'Sidney No. 1 Lake Park',
-    tags: ['cool', 'teacher']
+    sex: '男'
+  },
+  {
+    key: 2,
+    name: 'Joe Black',
+    age: 32,
+    address: 'Sidney No. 1 Lake Park',
+    sex: '男'
+  },
+  {
+    key: 2,
+    name: 'Joe Black',
+    age: 32,
+    address: 'Sidney No. 1 Lake Park',
+    sex: '男'
+  },
+  {
+    key: 2,
+    name: 'Joe Black',
+    age: 32,
+    address: 'Sidney No. 1 Lake Park',
+    sex: '男'
+  },
+  {
+    key: 2,
+    name: 'Joe Black',
+    age: 32,
+    address: 'Sidney No. 1 Lake Park',
+    sex: '男'
+  },
+  {
+    key: 2,
+    name: 'Joe Black',
+    age: 32,
+    address: 'Sidney No. 1 Lake Park',
+    sex: '男'
+  },
+  {
+    key: 2,
+    name: 'Joe Black',
+    age: 32,
+    address: 'Sidney No. 1 Lake Park',
+    sex: '男'
+  },
+  {
+    key: 2,
+    name: 'Joe Black',
+    age: 32,
+    address: 'Sidney No. 1 Lake Park',
+    sex: '男'
+  },
+  {
+    key: 2,
+    name: 'Joe Black',
+    age: 32,
+    address: 'Sidney No. 1 Lake Park',
+    sex: '男'
+  },
+  {
+    key: 2,
+    name: 'Joe Black',
+    age: 32,
+    address: 'Sidney No. 1 Lake Park',
+    sex: '男'
+  },
+  {
+    key: 2,
+    name: 'Joe Black',
+    age: 32,
+    address: 'Sidney No. 1 Lake Park',
+    sex: '男'
+  },
+  {
+    key: 2,
+    name: 'Joe Black',
+    age: 32,
+    address: 'Sidney No. 1 Lake Park',
+    sex: '男'
+  },
+  {
+    key: 2,
+    name: 'Joe Black',
+    age: 32,
+    address: 'Sidney No. 1 Lake Park',
+    sex: '男'
+  },
+  {
+    key: 2,
+    name: 'Joe Black',
+    age: 32,
+    address: 'Sidney No. 1 Lake Park',
+    sex: '男'
   }
 ]
-
-export default defineComponent({
-  setup () {
-    const message = useMessage()
-    return {
-      data: createData(),
-      columns: createColumns({
-        sendMail (rowData) {
-          message.info('send mail to ' + rowData.name)
-        }
-      }),
-      pagination: {
-        pageSize: 10
-      }
-    }
+const columns=createColumns({
+  sendMail (rowData) {
+    message.info('send mail to ' + rowData.name)
   }
 })
+const pagination = {pageSize: 10}
 </script>
 <template>
-  <n-data-table :columns="columns" :data="data" :pagination="pagination" />
+  <div class="data">
+    <n-data-table :columns="columns" :data="data" striped  :pagination="pagination" />
+  </div>
 </template>
 <style scoped>
-*{
-
+.data{
+  width: 95%;
+  margin: auto;
 }
 </style>

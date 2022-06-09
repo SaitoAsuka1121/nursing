@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import {h, defineComponent, ref, Component} from 'vue'
+import {h, defineComponent, ref, Component, onMounted, watch} from 'vue'
 import {NIcon} from 'naive-ui'
 import type {MenuOption} from 'naive-ui'
+import {useRouter} from 'vue-router'
+import {useStore} from "vuex";
 import {
   HomeOutline as HomeIcon,
   BarChartSharp as BarIcon,
@@ -28,10 +30,8 @@ const menuOptions: MenuOption[] = [
             RouterLink,
             {
               to: {
-                name: 'home',
-                params: {
-
-                }
+                name: 'head',
+                params: {}
               }
             },
             {default: () => '首页'}
@@ -40,10 +40,19 @@ const menuOptions: MenuOption[] = [
     icon: renderIcon(HomeIcon)
   },
   {
-    label: '统计信息',
+    label: () =>
+        h(
+            RouterLink,
+            {
+              to: {
+                name: 'statistics',
+                params: {}
+              }
+            },
+            {default: () => '统计信息'}
+        ),
     key: 'statistics',
     icon: renderIcon(BarIcon),
-
   },
   {
     label: '信息管理',
@@ -51,16 +60,32 @@ const menuOptions: MenuOption[] = [
     icon: renderIcon(DocumentTextIcon),
     children: [
       {
-        label: '老人信息',
-        key: 'old',
+        label: () =>
+            h(
+                RouterLink,
+                {
+                  to: {
+                    name: 'elder',
+                    params: {}
+                  }
+                },
+                {default: () => '老人信息'}
+            ),
+        key: 'elder',
       },
       {
-        label: '用户信息',
+        label: () =>
+            h(
+                RouterLink,
+                {
+                  to: {
+                    name: 'user',
+                  }
+                },
+                {default: () => '用户信息'}
+            )
+        ,
         key: 'user',
-      },
-      {
-        label: '管理员',
-        key: 'admin',
       }
     ]
   },
@@ -70,45 +95,76 @@ const menuOptions: MenuOption[] = [
     icon: renderIcon(HeartIcon),
     children: [
       {
-        label: '病历信息',
+        label: () =>
+    h(
+        RouterLink,
+        {
+          to: {
+            name: 'case',
+          }
+        },
+        {default: () => '病历信息'}
+    ),
         key: 'caseHistory',
       },
       {
-        label: '药品信息',
+        label: () =>
+            h(
+                RouterLink,
+                {
+                  to: {
+                    name: 'drug',
+                  }
+                },
+                {default: () => '药品信息'}
+            ),
         key: 'drug',
       }
     ]
   },
-  {
-    label: '饮食管理',
-    key: 'diet',
-    icon: renderIcon(RestaurantIcon),
-    children: [
-      {
-        label: '餐谱信息',
-        key: 'recipe'
-      },
-      {
-        label: '采购信息',
-        key: 'purchasingInformation'
-      }
-    ]
-  },
+
   {
     label: '消息处理',
     key: 'informationProcessing',
     icon: renderIcon(NotificationsIcon),
     children: [
       {
-        label: '待处理',
+        label: () =>
+            h(
+                RouterLink,
+                {
+                  to: {
+                    name: 'tobeprocessed',
+                  }
+                },
+                {default: () => '待处理'}
+            ),
         key: 'toBeProcessed'
       },
       {
-        label: '已处理',
+        label:  () =>
+            h(
+                RouterLink,
+                {
+                  to: {
+                    name: 'processed',
+                  }
+                },
+                {default: () => '已处理'}
+            ),
         key: 'processed'
       },
       {
-        label: '公告',
+        label:  () =>
+            h(
+                RouterLink,
+                {
+                  to: {
+                    name: 'announcement',
+                  }
+                },
+                {default: () => '公告'}
+            ),
         key: 'announcement'
       }
     ]
@@ -119,32 +175,39 @@ const menuOptions: MenuOption[] = [
     icon: renderIcon(BuildIcon),
     children: [
       {
-        label: '事故记录',
+        label: () =>
+            h(
+                RouterLink,
+                {
+                  to: {
+                    name: 'accident',
+                  }
+                },
+                {default: () => '事故记录'}
+            ),
         key: 'accident'
       },
       {
-        label: '访客记录',
+        label: () =>
+            h(
+                RouterLink,
+                {
+                  to: {
+                    name: 'visitorRecord',
+                  }
+                },
+                {default: () => '访客记录'}
+            ),
         key: 'visitorRecord'
       }
     ]
-  },
-  {
-    label: '外出申请',
-    key: 'goOut',
-    icon: renderIcon(HandLeftIcon),
-    children: [
-      {
-        label: '已处理',
-        key: 'go_processed',
-      },
-      {
-        label: '待处理',
-        key: 'go_toBeProcessed'
-      }
-    ]
   }
-
 ]
+const store = useStore()
+let selectKey = ref(store.state.selectKey)
+watch(()=>store.state.selectKey,(newV,oldV)=>{
+  selectKey.value=newV
+})
 const collapsed = ref(false)
 const sendBack = (val: boolean) => {
   console.log(val)
@@ -169,6 +232,7 @@ const sendBack = (val: boolean) => {
             <n-menu
                 :collapsed="collapsed"
                 :inverted="inverted"
+                :value="selectKey"
                 :collapsed-width="64"
                 :collapsed-icon-size="22"
                 :options="menuOptions"
