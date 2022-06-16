@@ -1,10 +1,6 @@
 import {createRouter, createWebHashHistory} from "vue-router";
 const routes = [
-    {
-        path: '/' ,
-        name:'head',
-        component:()=>import('../view/Login/Login.vue')
-    },
+
     {
         path: '/statistics' ,
         name:'statistics',
@@ -18,7 +14,7 @@ const routes = [
     {
         path: '/info/elder',
         name:'elder',
-        component:()=>import('../view/Info/Elder.vue')
+        component:()=>import('../view/Info/Elder/Elder.vue')
     },
     {
         path: '/health/case',
@@ -41,11 +37,6 @@ const routes = [
         component:()=>import('../view/information/processed/Processed.vue')
     },
     {
-        path: '/information/tobeprocessed',
-        name:'tobeprocessed',
-        component:()=>import('../view/information/toBeProcessed/ToBeProcessed.vue')
-    },
-    {
         path: '/safe/accident',
         name: 'accident',
         component:()=>import('../view/Safe/Accident/Accident.vue')
@@ -54,8 +45,12 @@ const routes = [
         path: '/safe/visitorRecord',
         name: 'visitorRecord',
         component:()=>import('../view/Safe/VisitorRecord/VisitorRecord.vue')
+    },
+    {
+        path:'/mechanism',
+        name:'mechanism',
+        component:()=>import('../view/Mechanism/Mechanism.vue')
     }
-
 ]
 const router = createRouter({
     history:createWebHashHistory(),

@@ -1,9 +1,10 @@
-<script setup lang="ts">
+<script setup lang="ts" >
 import {ref, reactive, onMounted} from 'vue'
 import Menu from "../../Admin/components/Menu.vue";
-import Content from "./Content.vue";
-import {useStore} from "vuex";
 
+import {useStore} from "vuex";
+import CaseData from "./CaseData.vue";
+import Content from "../../Admin/components/Content.vue";
 const emit = defineEmits(["changeEmit"])
 
 onMounted(()=>{
@@ -12,7 +13,7 @@ onMounted(()=>{
 })
 </script>
 <template>
-<Content input_name="老人姓名"/>
+<Content input_name="老人姓名"><CaseData/></Content>
 </template>
 <style scoped>
 

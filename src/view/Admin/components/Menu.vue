@@ -25,32 +25,12 @@ function renderIcon(icon: Component) {
 const inverted = true
 const menuOptions: MenuOption[] = [
   {
-    label: () =>
-        h(
-            RouterLink,
-            {
-              to: {
-                name: 'head',
-                params: {}
-              }
-            },
-            {default: () => '首页'}
-        ),
+    label: () => h('a', {href: 'http://localhost:3010/#/home'}, '网站首页'),
     key: 'home',
     icon: renderIcon(HomeIcon)
   },
   {
-    label: () =>
-        h(
-            RouterLink,
-            {
-              to: {
-                name: 'statistics',
-                params: {}
-              }
-            },
-            {default: () => '统计信息'}
-        ),
+    label: () => h(RouterLink, {to: {name: 'statistics', params: {}}}, {default: () => '统计信息'}),
     key: 'statistics',
     icon: renderIcon(BarIcon),
   },
@@ -60,31 +40,11 @@ const menuOptions: MenuOption[] = [
     icon: renderIcon(DocumentTextIcon),
     children: [
       {
-        label: () =>
-            h(
-                RouterLink,
-                {
-                  to: {
-                    name: 'elder',
-                    params: {}
-                  }
-                },
-                {default: () => '老人信息'}
-            ),
+        label: () => h(RouterLink, {to: {name: 'elder', params: {}}}, {default: () => '老人信息'}),
         key: 'elder',
       },
       {
-        label: () =>
-            h(
-                RouterLink,
-                {
-                  to: {
-                    name: 'user',
-                  }
-                },
-                {default: () => '用户信息'}
-            )
-        ,
+        label: () => h(RouterLink, {to: {name: 'user',}}, {default: () => '用户信息'}),
         key: 'user',
       }
     ]
@@ -95,29 +55,11 @@ const menuOptions: MenuOption[] = [
     icon: renderIcon(HeartIcon),
     children: [
       {
-        label: () =>
-    h(
-        RouterLink,
-        {
-          to: {
-            name: 'case',
-          }
-        },
-        {default: () => '病历信息'}
-    ),
+        label: () => h(RouterLink, {to: {name: 'case',}}, {default: () => '病历信息'}),
         key: 'caseHistory',
       },
       {
-        label: () =>
-            h(
-                RouterLink,
-                {
-                  to: {
-                    name: 'drug',
-                  }
-                },
-                {default: () => '药品信息'}
-            ),
+        label: () => h(RouterLink, {to: {name: 'drug',}}, {default: () => '药品信息'}),
         key: 'drug',
       }
     ]
@@ -129,42 +71,11 @@ const menuOptions: MenuOption[] = [
     icon: renderIcon(NotificationsIcon),
     children: [
       {
-        label: () =>
-            h(
-                RouterLink,
-                {
-                  to: {
-                    name: 'tobeprocessed',
-                  }
-                },
-                {default: () => '待处理'}
-            ),
-        key: 'toBeProcessed'
-      },
-      {
-        label:  () =>
-            h(
-                RouterLink,
-                {
-                  to: {
-                    name: 'processed',
-                  }
-                },
-                {default: () => '已处理'}
-            ),
+        label: () => h(RouterLink, {to: {name: 'processed',}}, {default: () => '消息'}),
         key: 'processed'
       },
       {
-        label:  () =>
-            h(
-                RouterLink,
-                {
-                  to: {
-                    name: 'announcement',
-                  }
-                },
-                {default: () => '公告'}
-            ),
+        label: () => h(RouterLink, {to: {name: 'announcement',}}, {default: () => '公告'}),
         key: 'announcement'
       }
     ]
@@ -175,38 +86,25 @@ const menuOptions: MenuOption[] = [
     icon: renderIcon(BuildIcon),
     children: [
       {
-        label: () =>
-            h(
-                RouterLink,
-                {
-                  to: {
-                    name: 'accident',
-                  }
-                },
-                {default: () => '事故记录'}
-            ),
+        label: () => h(RouterLink, {to: {name: 'accident',}}, {default: () => '事故记录'}),
         key: 'accident'
       },
       {
-        label: () =>
-            h(
-                RouterLink,
-                {
-                  to: {
-                    name: 'visitorRecord',
-                  }
-                },
-                {default: () => '访客记录'}
-            ),
+        label: () => h(RouterLink, {to: {name: 'visitorRecord',}}, {default: () => '访客记录'}),
         key: 'visitorRecord'
       }
     ]
+  } ,
+  {
+    label: () => h(RouterLink, {to: {name: 'mechanism', params: {}}}, {default: () => '机构信息'}),
+    key: 'mechanism',
+    icon: renderIcon(BarIcon),
   }
 ]
 const store = useStore()
 let selectKey = ref(store.state.selectKey)
-watch(()=>store.state.selectKey,(newV,oldV)=>{
-  selectKey.value=newV
+watch(() => store.state.selectKey, (newV, oldV) => {
+  selectKey.value = newV
 })
 const collapsed = ref(false)
 const sendBack = (val: boolean) => {

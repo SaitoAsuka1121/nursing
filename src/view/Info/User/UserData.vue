@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { h, defineComponent } from 'vue'
+import {h, defineComponent, ref, watch} from 'vue'
 import { NTag, NButton, useMessage } from 'naive-ui'
 import type { DataTableColumns } from 'naive-ui'
+import {useStore} from "vuex";
 
 type RowData = {
-  key: number
+  id: number
   name: string
   age: number
   address: string
@@ -48,17 +49,26 @@ const createColumns = ({sendMail}: { sendMail: (rowData: RowData) => void }): Da
       }
     },
     {
-      title: 'Action',
+      title: '操作',
       key: 'actions',
       render (row) {
-        return h(
+        return [h(
             NButton,
             {
               size: 'small',
               onClick: () => sendMail(row)
             },
             { default: () => '查看' }
-        )
+        ),h(
+            NButton,
+            {
+              size: 'small',
+              type:'error',
+              style:'margin-left:6px',
+              onClick: () => sendMail(row)
+            },
+            { default: () => '删除' }
+        )]
       }
     }
   ]
@@ -67,7 +77,7 @@ const createColumns = ({sendMail}: { sendMail: (rowData: RowData) => void }): Da
 const message = useMessage()
 const data = [
   {
-    key: 0,
+    id: 0,
     name: 'John Brown',
     age: 32,
     address: 'New York No. 1 Lake Park',
@@ -184,9 +194,15 @@ const columns=createColumns({
     message.info('send mail to ' + rowData.name)
   }
 })
+const store = useStore()
+let town = ref(store.state.town)
+watch(() => store.state.town, (newV, oldV) => {
+  town.value = newV
+})
 const pagination = {pageSize: 10}
 </script>
 <template>
+  <h1 class="title">{{town}}</h1>
   <div class="data">
     <n-data-table :columns="columns" :data="data" striped  :pagination="pagination" />
   </div>
@@ -195,5 +211,13 @@ const pagination = {pageSize: 10}
 .data{
   width: 95%;
   margin: auto;
+}
+.title{
+  position: relative;
+  top:-50px
+}
+.data{
+  position: relative;
+  top: -50px;
 }
 </style>

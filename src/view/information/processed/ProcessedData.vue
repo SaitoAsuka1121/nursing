@@ -1,15 +1,14 @@
 <script setup lang="ts">
-import {h, ref, reactive, watch} from 'vue'
-import type {DataTableColumns, DataTableRowKey  } from 'naive-ui'
+import {h, ref, watch} from 'vue'
+import type {DataTableColumns} from 'naive-ui'
 import {NButton, NTag, useMessage} from 'naive-ui'
 import {useStore} from "vuex";
 
 type RowData = {
   key: number
   name: string
-  begin: number
-  end: string
-  price: number
+  user_name: string,
+  content:string
 }
 const createColumns = ({sendMail}: { sendMail: (rowData: RowData) => void }): DataTableColumns<RowData> => {
   return [
@@ -17,20 +16,16 @@ const createColumns = ({sendMail}: { sendMail: (rowData: RowData) => void }): Da
       type: 'selection'
     },
     {
-      title: '药品名',
+      title: '消息类型',
       key: 'name'
     },
     {
-      title: '生产日期',
-      key: 'begin'
+      title: '申请人',
+      key: 'user_name'
     },
     {
-      title: '过期日期',
-      key: 'end'
-    },
-    {
-      title: '价格/盒',
-      key: 'price',
+      title:'内容',
+      key:'content'
     },
     {
       title: '操作',
@@ -60,87 +55,67 @@ const createColumns = ({sendMail}: { sendMail: (rowData: RowData) => void }): Da
 const data = [
   {
     key: 0,
-    name: '速效救心丸',
+    name: '通告批评',
     begin:'2022-6-10',
     end:'2023-6-10',
-    price:'100'
+    user_name:'root',
+    content:'玩火'
   },
   {
-    key: 1,
-    name: '速效救心丸',
+    key: 0,
+    name: '通告批评',
     begin:'2022-6-10',
     end:'2023-6-10',
-    price:'100'
+    user_name:'root',
+    content:'玩火'
   },
   {
-    key: 2,
-    name: '速效救心丸',
+    key: 0,
+    name: '通告批评',
     begin:'2022-6-10',
     end:'2023-6-10',
-    price:'100'
+    user_name:'root',
+    content:'玩火'
   },
   {
-    key: 3,
-    name: '速效救心丸',
+    key: 0,
+    name: '通告批评',
     begin:'2022-6-10',
     end:'2023-6-10',
-    price:'100'
+    user_name:'root',
+    content:'玩火'
   },
   {
-    key: 4,
-    name: '速效救心丸',
+    key: 0,
+    name: '通告批评',
     begin:'2022-6-10',
     end:'2023-6-10',
-    price:'100'
+    user_name:'root',
+    content:'玩火'
   },
   {
-    key: 5,
-    name: '速效救心丸',
+    key: 0,
+    name: '通告批评',
     begin:'2022-6-10',
     end:'2023-6-10',
-    price:'100'
+    user_name:'root',
+    content:'玩火'
   },
   {
-    key: 6,
-    name: '速效救心丸',
+    key: 0,
+    name: '通告批评',
     begin:'2022-6-10',
     end:'2023-6-10',
-    price:'100'
+    user_name:'root',
+    content:'玩火'
   },
   {
-    key: 7,
-    name: '速效救心丸',
+    key: 0,
+    name: '通告批评',
     begin:'2022-6-10',
     end:'2023-6-10',
-    price:'100'
-  },
-  {
-    key: 8,
-    name: '速效救心丸',
-    begin:'2022-6-10',
-    end:'2023-6-10',
-    price:'100'
-  },
-  {
-    key: 9,
-    name: '速效救心丸',
-    begin:'2022-6-10',
-    end:'2023-6-10',
-    price:'100'
-  },
-  {
-    key: 10,
-    name: '速效救心丸',
-    begin:'2022-6-10',
-    end:'2023-6-10',
-    price:'100'
-  },
-  {
-    key: 11,
-    name: '速效救心丸',
-    begin:'2022-6-10',
-    end:'2023-6-10',
-    price:'100'
+    user_name:'root',
+    content:'玩火'
   }
 ]
 const message = useMessage()
@@ -155,32 +130,12 @@ watch(() => store.state.town, (newV, oldV) => {
   town.value = newV
 })
 const pagination = {pageSize: 10}
-const checkedRowKeysRef = ref<[]>([])
-const rowKey=(row:RowData)=>row.key
-const handleCheck=(rowKeys:[])=>{
-  checkedRowKeysRef.value = rowKeys
-  console.log(checkedRowKeysRef.value)
-}
-
 </script>
 <template>
-  <h1 class="title">{{town}}</h1>
   <div class="data">
-    <n-data-table
-        :columns="columns"
-        :data="data" striped
-        :pagination="pagination"
-        :row-key="rowKey"
-        @update:checked-row-keys="handleCheck"/>
+    <n-data-table :columns="columns" :data="data" striped  :pagination="pagination" />
   </div>
 </template>
 <style scoped>
-.title{
-  position: relative;
-  top:-50px
-}
-.data{
-  position: relative;
-  top: -50px;
-}
+
 </style>

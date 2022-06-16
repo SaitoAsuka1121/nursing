@@ -2,15 +2,19 @@
 import {ref, reactive, onMounted, inject,getCurrentInstance } from 'vue'
 import * as echarts from 'echarts'
 import {useStore} from "vuex";
+import { useRouter } from 'vue-router';
 let echart = echarts
-
+const router = useRouter()
 onMounted(()=>{
+  if (location.href.indexOf("#reloaded") == -1) {
+location.href = location.href + "#reloaded";
+location.reload();
+}
   init();
   const store = useStore()
   store.commit('selectKey','statistics')
 })
 function init(){
-
   const chart = echart.init(document.getElementById("chart")) ;
   const age = echart.init(document.getElementById("age")) ;
 
@@ -114,6 +118,7 @@ function init(){
         </div>
       </div>
     </div>
+    <img src="src/assets/logo.svg" class="img"/>
     <div class="chart-box">
       <div class="chart" id="chart">
       </div>
@@ -133,6 +138,8 @@ function init(){
   width: 400px;
   background-color: #fff;
   border-radius: 3%;
+  margin-left: 30px;
+  margin-bottom: 30px;
 }
 
 .age{
@@ -152,5 +159,9 @@ function init(){
   width: 1600px;
   height: 300px;
   margin: auto;
+}
+.img{
+  position: absolute;
+  top:-15px;
 }
 </style>
