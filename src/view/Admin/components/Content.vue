@@ -137,9 +137,6 @@ function get_data(value:string){
             </div>
           </div>
 
-          <div class="del-button">
-            <slot name="del"></slot>
-          </div>
 <!--          <n-space vertical class="sel-button">-->
 <!--            <n-select v-model:value="town_value" :options="options" @update:value='get_data'/>-->
 <!--          </n-space>-->

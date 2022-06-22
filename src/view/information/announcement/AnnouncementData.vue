@@ -1,22 +1,20 @@
 <script setup lang="ts">
-import {h, ref, watch} from 'vue'
+import {h, onMounted, ref, watch} from 'vue'
 import type {DataTableColumns} from 'naive-ui'
 import {NButton, NTag, useMessage} from 'naive-ui'
 import {useStore} from "vuex";
+import axios from "axios";
 
 type RowData = {
-  key: number
+  id: number
   name: string
   begin: number
   end: string
   user_name: string,
   content:string
 }
-const createColumns = ({sendMail}: { sendMail: (rowData: RowData) => void }): DataTableColumns<RowData> => {
+const createColumns = ({sendMail}: { sendMail: (rowData: RowData) => void },{delRow}): DataTableColumns<RowData> => {
   return [
-    {
-      type: 'selection'
-    },
     {
       title: '公告名',
       key: 'name'
@@ -54,7 +52,7 @@ const createColumns = ({sendMail}: { sendMail: (rowData: RowData) => void }): Da
               size: 'small',
               type:'error',
               style:'margin-left:6px',
-              onClick: () => sendMail(row)
+              onClick: () => delRow(row)
             },
             { default: () => '删除' }
         )]
@@ -62,76 +60,53 @@ const createColumns = ({sendMail}: { sendMail: (rowData: RowData) => void }): Da
     }
   ]
 }
-const data = [
-  {
-    key: 0,
-    name: '通告批评',
-    begin:'2022-6-10',
-    end:'2023-6-10',
-    user_name:'root',
-    content:'玩火'
-  },
-  {
-    key: 0,
-    name: '通告批评',
-    begin:'2022-6-10',
-    end:'2023-6-10',
-    user_name:'root',
-    content:'玩火'
-  },
-  {
-    key: 0,
-    name: '通告批评',
-    begin:'2022-6-10',
-    end:'2023-6-10',
-    user_name:'root',
-    content:'玩火'
-  },
-  {
-    key: 0,
-    name: '通告批评',
-    begin:'2022-6-10',
-    end:'2023-6-10',
-    user_name:'root',
-    content:'玩火'
-  },
-  {
-    key: 0,
-    name: '通告批评',
-    begin:'2022-6-10',
-    end:'2023-6-10',
-    user_name:'root',
-    content:'玩火'
-  },
-  {
-    key: 0,
-    name: '通告批评',
-    begin:'2022-6-10',
-    end:'2023-6-10',
-    user_name:'root',
-    content:'玩火'
-  },
-  {
-    key: 0,
-    name: '通告批评',
-    begin:'2022-6-10',
-    end:'2023-6-10',
-    user_name:'root',
-    content:'玩火'
-  },
-  {
-    key: 0,
-    name: '通告批评',
-    begin:'2022-6-10',
-    end:'2023-6-10',
-    user_name:'root',
-    content:'玩火'
-  }
-]
+const data = ref([])
+const id = ref(null)
+const showModal = ref(false)
+
+function onNegativeClick() {
+  message.success('Cancel')
+  showModal.value = false
+}
+
+function onPositiveClick() {
+  console.log(id.value);
+  axios.get('/announcement/del', {
+    params: {
+      id: id.value
+    }
+  }).then((res) => {
+    if (res.data.code == 200) {
+      message.success("删除成功");
+      get_info()
+    } else {
+      message.error("删除失败")
+    }
+
+
+  })
+  showModal.value = false
+
+}
+onMounted(()=>{
+  get_info()
+})
+const get_info = () => {
+  axios.get('/announcement/info').then(res => {
+    data.value = res.data.data
+  }).catch((err) => {
+    console.log(err)
+  })
+}
 const message = useMessage()
 const columns=createColumns({
   sendMail (rowData) {
     message.info('send mail to ' + rowData.name)
+  }
+},{
+  delRow(rowData) {
+    showModal.value = true
+    id.value = rowData.id
   }
 })
 const store = useStore()
@@ -145,6 +120,10 @@ const pagination = {pageSize: 10}
   <div class="data">
     <n-data-table :columns="columns" :data="data" striped  :pagination="pagination" />
   </div>
+  <n-modal v-model:show="showModal" :mask-closable="false" preset="dialog" type="error" title="确认" content="你确认"
+           positive-text="确认" negative-text="取消" @positive-click="onPositiveClick" @negative-click="onNegativeClick">
+    这将会删除数据,且无法恢复!
+  </n-modal>
 </template>
 <style scoped>
 

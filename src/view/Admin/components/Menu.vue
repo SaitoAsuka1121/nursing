@@ -43,10 +43,10 @@ const menuOptions: MenuOption[] = [
         label: () => h(RouterLink, {to: {name: 'elder', params: {}}}, {default: () => '老人信息'}),
         key: 'elder',
       },
-      {
-        label: () => h(RouterLink, {to: {name: 'user',}}, {default: () => '用户信息'}),
-        key: 'user',
-      }
+      // {
+      //   label: () => h(RouterLink, {to: {name: 'user',}}, {default: () => '志愿者信息'}),
+      //   key: 'user',
+      // }
     ]
   },
   {
@@ -66,40 +66,31 @@ const menuOptions: MenuOption[] = [
   },
 
   {
-    label: '消息处理',
-    key: 'informationProcessing',
+    label: () => h(RouterLink, {to: {name: 'processed',}}, {default: () => '帮助处理'}),
+    key: 'processed',
     icon: renderIcon(NotificationsIcon),
-    children: [
-      {
-        label: () => h(RouterLink, {to: {name: 'processed',}}, {default: () => '消息'}),
-        key: 'processed'
-      },
-      {
-        label: () => h(RouterLink, {to: {name: 'announcement',}}, {default: () => '公告'}),
-        key: 'announcement'
-      }
-    ]
+  
   },
-  {
-    label: '安全管理',
-    key: 'safe',
-    icon: renderIcon(BuildIcon),
-    children: [
-      {
-        label: () => h(RouterLink, {to: {name: 'accident',}}, {default: () => '事故记录'}),
-        key: 'accident'
-      },
-      {
-        label: () => h(RouterLink, {to: {name: 'visitorRecord',}}, {default: () => '访客记录'}),
-        key: 'visitorRecord'
-      }
-    ]
-  } ,
-  {
-    label: () => h(RouterLink, {to: {name: 'mechanism', params: {}}}, {default: () => '机构信息'}),
-    key: 'mechanism',
-    icon: renderIcon(BarIcon),
-  }
+  // {
+  //   label: '安全管理',
+  //   key: 'safe',
+  //   icon: renderIcon(BuildIcon),
+  //   children: [
+  //     {
+  //       label: () => h(RouterLink, {to: {name: 'accident',}}, {default: () => '事故记录'}),
+  //       key: 'accident'
+  //     },
+  //     {
+  //       label: () => h(RouterLink, {to: {name: 'visitorRecord',}}, {default: () => '访客记录'}),
+  //       key: 'visitorRecord'
+  //     }
+  //   ]
+  // } ,
+  // {
+  //   label: () => h(RouterLink, {to: {name: 'mechanism', params: {}}}, {default: () => '机构信息'}),
+  //   key: 'mechanism',
+  //   icon: renderIcon(BarIcon),
+  // }
 ]
 const store = useStore()
 let selectKey = ref(store.state.selectKey)

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref, reactive} from 'vue'
+import {ref, reactive, onMounted} from 'vue'
 import {FormInst, FormItemRule, useMessage} from 'naive-ui'
 import axios from "axios";
 
@@ -15,10 +15,20 @@ const formValue = ref({
     phone: '',
     sex: '',
     age: null,
-    address: ''
+    address: '',
+    cases:'',
+    relative_phone:''
   }
 })
-
+const get_case=()=>{
+axios.get('/health/case/').then((res)=>{
+      console.log(res.data.data);
+      
+  })
+}
+onMounted(()=>{
+  
+})
 const rules = {
   user: {
     name: {
@@ -77,9 +87,23 @@ const rules = {
           })
         })
       }
+    },
+    relative_phone:{
+      required: true,
+      trigger: 'input',
+      validator: (rule: FormItemRule, value: string) => {
+        return new Promise<void>((resolve, reject) => {
+          setTimeout(() => {
+            if (value==formValue.value.user.phone) {
+              reject(Error('紧急联系不能为自己!'))
+            } else {
+              resolve()
+            }
+          })
+        })
+      }
     }
   },
-
 }
 const onNegativeClick = () => {
   message.success('取消添加')
@@ -87,12 +111,14 @@ const onNegativeClick = () => {
 }
 function onPositiveClick  () {
   const data = {
-  
-      name: formValue.value.user.name,
-      account: formValue.value.user.phone,
-      password: formValue.value.user.phone,
-      check_password: formValue.value.user.phone
-    
+    name: formValue.value.user.name,
+    phone: formValue.value.user.phone,
+    sex: formValue.value.user.sex,
+    age: formValue.value.user.age,
+    address: formValue.value.user.address,
+    cases:formValue.value.user.cases,
+    relative_phone:formValue.value.user.relative_phone
+
   }
   console.log(data)
   const messageReactive = message.loading('上传中', {
@@ -101,10 +127,9 @@ function onPositiveClick  () {
   form.value?.validate((errors) => {
     if (!errors) {
       message.info('正在注册')
-      axios.post("/user/register", data).then((res) => {
+      axios.post("/health/case/add", data).then((res) => {
         console.log(res)
         message.success('注册成功')
-        
       }).catch((err) => {
         console.log(err)
       })
@@ -118,7 +143,7 @@ function onPositiveClick  () {
 </script>
 <template>
   <div class="add-button">
-    <n-button @click="showAdd" type="error">删除</n-button>
+    <n-button @click="showAdd" type="info">添加</n-button>
   </div>
   <n-modal
       v-model:show="showModal"
@@ -154,6 +179,12 @@ function onPositiveClick  () {
       <n-form-item label="性别" path="sex">
         <n-input v-model:value="formValue.user.sex" placeholder="输入性别(男|女)"/>
       </n-form-item>
+      <n-form-item label="病名" path="cases">
+        <n-input v-model:value="formValue.user.cases" placeholder="输入病名,‘,’分割"/>
+      </n-form-item>
+      <n-form-item label="紧急联系" path="relative_phone">
+        <n-input v-model:value="formValue.user.relative_phone" placeholder="输入电话(长)"/>
+      </n-form-item>
     </n-form>
   </n-modal>
 </template>
@@ -162,6 +193,6 @@ function onPositiveClick  () {
 .add-button {
   position: absolute;
   top: -97px;
-  left: 900px;
+  left: 800px;
 }
 </style>

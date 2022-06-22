@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import {h, ref, watch} from 'vue'
+import {h, onMounted, ref, watch} from 'vue'
 import type {DataTableColumns} from 'naive-ui'
 import {NButton, NTag, useMessage} from 'naive-ui'
 import {useStore} from "vuex";
+import axios from "axios";
 
 type RowData = {
   key: number
@@ -10,11 +11,8 @@ type RowData = {
   user_name: string,
   content:string
 }
-const createColumns = ({sendMail}: { sendMail: (rowData: RowData) => void }): DataTableColumns<RowData> => {
+const createColumns = ({sendMail}: { sendMail: (rowData: RowData) => void },{delRow}): DataTableColumns<RowData> => {
   return [
-    {
-      type: 'selection'
-    },
     {
       title: '消息类型',
       key: 'name'
@@ -52,78 +50,75 @@ const createColumns = ({sendMail}: { sendMail: (rowData: RowData) => void }): Da
     }
   ]
 }
-const data = [
+const data = ref([
   {
-    key: 0,
-    name: '通告批评',
-    begin:'2022-6-10',
-    end:'2023-6-10',
-    user_name:'root',
-    content:'玩火'
+    name:'帮助',
+    user_name:'马小跳',
+    content:'我需要帮助'
   },
   {
-    key: 0,
-    name: '通告批评',
-    begin:'2022-6-10',
-    end:'2023-6-10',
-    user_name:'root',
-    content:'玩火'
+    name:'帮助',
+    user_name:'马小跳',
+    content:'我需要帮助'
+  },{
+    name:'帮助',
+    user_name:'马小跳',
+    content:'我需要帮助'
   },
   {
-    key: 0,
-    name: '通告批评',
-    begin:'2022-6-10',
-    end:'2023-6-10',
-    user_name:'root',
-    content:'玩火'
-  },
-  {
-    key: 0,
-    name: '通告批评',
-    begin:'2022-6-10',
-    end:'2023-6-10',
-    user_name:'root',
-    content:'玩火'
-  },
-  {
-    key: 0,
-    name: '通告批评',
-    begin:'2022-6-10',
-    end:'2023-6-10',
-    user_name:'root',
-    content:'玩火'
-  },
-  {
-    key: 0,
-    name: '通告批评',
-    begin:'2022-6-10',
-    end:'2023-6-10',
-    user_name:'root',
-    content:'玩火'
-  },
-  {
-    key: 0,
-    name: '通告批评',
-    begin:'2022-6-10',
-    end:'2023-6-10',
-    user_name:'root',
-    content:'玩火'
-  },
-  {
-    key: 0,
-    name: '通告批评',
-    begin:'2022-6-10',
-    end:'2023-6-10',
-    user_name:'root',
-    content:'玩火'
+    name:'帮助',
+    user_name:'马小跳',
+    content:'我需要帮助'
   }
-]
+])
 const message = useMessage()
 const columns=createColumns({
   sendMail (rowData) {
     message.info('send mail to ' + rowData.name)
   }
+},{
+  delRow(rowData) {
+    showModal.value = true
+    id.value = rowData.id
+  }
 })
+const id = ref(null)
+const showModal = ref(false)
+
+function onNegativeClick() {
+  message.success('Cancel')
+  showModal.value = false
+}
+
+function onPositiveClick() {
+  console.log(id.value);
+  axios.get('/processed/del', {
+    params: {
+      id: id.value
+    }
+  }).then((res) => {
+    if (res.data.code == 200) {
+      message.success("删除成功");
+      get_info()
+    } else {
+      message.error("删除失败")
+    }
+
+
+  })
+  showModal.value = false
+
+}
+onMounted(()=>{
+  get_info()
+})
+const get_info = () => {
+  axios.get('/processed/info').then(res => {
+    data.value = res.data.data
+  }).catch((err) => {
+    console.log(err)
+  })
+}
 const store = useStore()
 let town = ref(store.state.town)
 watch(() => store.state.town, (newV, oldV) => {

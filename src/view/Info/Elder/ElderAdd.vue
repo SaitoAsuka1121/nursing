@@ -93,7 +93,6 @@ function onPositiveClick  () {
       check_password: formValue.value.user.phone
     
   }
-  console.log(data)
   const messageReactive = message.loading('上传中', {
     duration: 0
   })

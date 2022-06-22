@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import {h, defineComponent, ref, watch} from 'vue'
-import { NTag, NButton, useMessage } from 'naive-ui'
-import type { DataTableColumns } from 'naive-ui'
+import {h, defineComponent, ref, watch, onMounted} from 'vue'
+import {NTag, NButton, useMessage} from 'naive-ui'
+import type {DataTableColumns} from 'naive-ui'
 import {useStore} from "vuex";
+import axios from "axios";
 
 type RowData = {
   id: number
@@ -12,27 +13,24 @@ type RowData = {
   sex: string
 }
 
-const createColumns = ({sendMail}: { sendMail: (rowData: RowData) => void }): DataTableColumns<RowData> => {
+const createColumns = ({sendMail}: { sendMail: (rowData: RowData) => void }, {delRow}): DataTableColumns<RowData> => {
   return [
     {
-      type: 'selection'
-    },
-    {
-      title: 'Name',
+      title: '姓名',
       key: 'name'
     },
     {
-      title: 'Age',
+      title: '年龄',
       key: 'age'
     },
     {
-      title: 'Address',
+      title: '地址',
       key: 'address'
     },
     {
-      title: 'Sex',
+      title: '性别',
       key: 'sex',
-      render(row){
+      render(row) {
         return h(
             NTag,
             {
@@ -51,23 +49,23 @@ const createColumns = ({sendMail}: { sendMail: (rowData: RowData) => void }): Da
     {
       title: '操作',
       key: 'actions',
-      render (row) {
+      render(row) {
         return [h(
             NButton,
             {
               size: 'small',
               onClick: () => sendMail(row)
             },
-            { default: () => '查看' }
-        ),h(
+            {default: () => '查看'}
+        ), h(
             NButton,
             {
               size: 'small',
-              type:'error',
-              style:'margin-left:6px',
+              type: 'error',
+              style: 'margin-left:6px',
               onClick: () => sendMail(row)
             },
-            { default: () => '删除' }
+            {default: () => '删除'}
         )]
       }
     }
@@ -75,123 +73,53 @@ const createColumns = ({sendMail}: { sendMail: (rowData: RowData) => void }): Da
 }
 
 const message = useMessage()
-const data = [
-  {
-    id: 0,
-    name: 'John Brown',
-    age: 32,
-    address: 'New York No. 1 Lake Park',
-    sex: '男'
-  },
-  {
-    key: 1,
-    name: 'Jim Green',
-    age: 42,
-    address: 'London No. 1 Lake Park',
-    sex: '男'
-  },
-  {
-    key: 2,
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sidney No. 1 Lake Park',
-    sex: '男'
-  },
-  {
-    key: 2,
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sidney No. 1 Lake Park',
-    sex: '男'
-  },
-  {
-    key: 2,
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sidney No. 1 Lake Park',
-    sex: '男'
-  },
-  {
-    key: 2,
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sidney No. 1 Lake Park',
-    sex: '男'
-  },
-  {
-    key: 2,
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sidney No. 1 Lake Park',
-    sex: '男'
-  },
-  {
-    key: 2,
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sidney No. 1 Lake Park',
-    sex: '男'
-  },
-  {
-    key: 2,
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sidney No. 1 Lake Park',
-    sex: '男'
-  },
-  {
-    key: 2,
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sidney No. 1 Lake Park',
-    sex: '男'
-  },
-  {
-    key: 2,
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sidney No. 1 Lake Park',
-    sex: '男'
-  },
-  {
-    key: 2,
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sidney No. 1 Lake Park',
-    sex: '男'
-  },
-  {
-    key: 2,
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sidney No. 1 Lake Park',
-    sex: '男'
-  },
-  {
-    key: 2,
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sidney No. 1 Lake Park',
-    sex: '男'
-  },
-  {
-    key: 2,
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sidney No. 1 Lake Park',
-    sex: '男'
-  },
-  {
-    key: 2,
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sidney No. 1 Lake Park',
-    sex: '男'
-  }
-]
-const columns=createColumns({
-  sendMail (rowData) {
+const data = ref([])
+const id = ref(null)
+const showModal = ref(false)
+
+function onNegativeClick() {
+  message.success('Cancel')
+  showModal.value = false
+}
+
+function onPositiveClick() {
+  console.log(id.value);
+  axios.get('/volunteer/del', {
+    params: {
+      id: id.value
+    }
+  }).then((res) => {
+    if (res.data.code == 200) {
+      message.success("删除成功");
+      get_info()
+    } else {
+      message.error("删除失败")
+    }
+
+
+  })
+  showModal.value = false
+
+}
+onMounted(()=>{
+  get_info()
+})
+const get_info = () => {
+  axios.get('/volunteer/info').then(res => {
+    console.log(res.data);
+    data.value = res.data.data
+  }).catch((err) => {
+    console.log(err)
+  })
+}
+const columns = createColumns({
+  sendMail(rowData) {
     message.info('send mail to ' + rowData.name)
+  }
+}, {
+  delRow(rowData) {
+    showModal.value = true
+    id.value = rowData.id
   }
 })
 const store = useStore()
@@ -202,21 +130,27 @@ watch(() => store.state.town, (newV, oldV) => {
 const pagination = {pageSize: 10}
 </script>
 <template>
-  <h1 class="title">{{town}}</h1>
+  <h1 class="title">{{ town }}</h1>
   <div class="data">
-    <n-data-table :columns="columns" :data="data" striped  :pagination="pagination" />
+    <n-data-table :columns="columns" :data="data" striped :pagination="pagination"/>
   </div>
+  <n-modal v-model:show="showModal" :mask-closable="false" preset="dialog" type="error" title="确认" content="你确认"
+           positive-text="确认" negative-text="取消" @positive-click="onPositiveClick" @negative-click="onNegativeClick">
+    这将会删除数据,且无法恢复!
+  </n-modal>
 </template>
 <style scoped>
-.data{
+.data {
   width: 95%;
   margin: auto;
 }
-.title{
+
+.title {
   position: relative;
-  top:-50px
+  top: -50px
 }
-.data{
+
+.data {
   position: relative;
   top: -50px;
 }

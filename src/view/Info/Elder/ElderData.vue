@@ -5,6 +5,7 @@ import type { DataTableColumns } from 'naive-ui'
 import { useStore } from "vuex";
 import axios from 'axios'
 import path from 'path';
+
 type RowData = {
   id: string
   name: string
@@ -15,9 +16,6 @@ type RowData = {
 
 const createColumns = ({ sendMail }: { sendMail: (rowData: RowData) => void }, { delRow }): DataTableColumns<RowData> => {
   return [
-    {
-      type: 'selection'
-    },
     {
       title: '姓名',
       key: 'name'
@@ -94,7 +92,7 @@ const columns = createColumns({
   }
 })
 const id = ref(null)
-const get_info=()=>{
+const get_info = () => {
   axios.get('/info/elder').then(res => {
     console.log(res.data);
     data.value = res.data.data
@@ -109,28 +107,30 @@ onMounted(() => {
 })
 
 const showModal = ref(false)
+
 function onNegativeClick() {
   message.success('Cancel')
   showModal.value = false
 }
+
 function onPositiveClick() {
   console.log(id.value);
-  axios.get('/user/del',{
-    params:{
-      id:id.value
+  axios.get('/user/del', {
+    params: {
+      id: id.value
     }
-  }).then((res)=>{
-      if(res.data.code==200){
-message.success("删除成功");
-get_info()
-      }else{
-          message.error("删除失败")
-      }
-      
-    
+  }).then((res) => {
+    if (res.data.code == 200) {
+      message.success("删除成功");
+      get_info()
+    } else {
+      message.error("删除失败")
+    }
+
+
   })
   showModal.value = false
-  
+
 }
 </script>
 <template>
@@ -141,7 +141,8 @@ get_info()
   </div>
   <n-modal v-model:show="showModal" :mask-closable="false" preset="dialog" type="error" title="确认" content="你确认"
     positive-text="确认" negative-text="取消" @positive-click="onPositiveClick" @negative-click="onNegativeClick">
-    这将会删除数据,且无法恢复!</n-modal>
+    这将会删除数据,且无法恢复!
+  </n-modal>
 </template>
 <style scoped>
 .data {

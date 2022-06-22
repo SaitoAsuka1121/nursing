@@ -3,6 +3,7 @@ import {ref, reactive, onMounted} from 'vue'
 import {useStore} from "vuex";
 import Content from "../../Admin/components/Content.vue";
 import DrugData from "./DrugData.vue";
+import DrugAdd from "./DrugAdd.vue";
 
 onMounted(()=>{
   const store = useStore()
@@ -10,7 +11,9 @@ onMounted(()=>{
 })
 </script>
 <template>
-<Content input_name="药品名"><DrugData/></Content>
+<Content input_name="药品名">
+  <DrugAdd slot="add"/>
+  <DrugData/></Content>
 </template>
 <style scoped>
 

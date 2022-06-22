@@ -1,21 +1,19 @@
 <script setup lang="ts">
-import {h, ref, reactive, watch} from 'vue'
-import type {DataTableColumns, DataTableRowKey  } from 'naive-ui'
+import {h, ref, reactive, watch, onMounted} from 'vue'
+import type {DataTableColumns  } from 'naive-ui'
 import {NButton, NTag, useMessage} from 'naive-ui'
 import {useStore} from "vuex";
+import axios from "axios";
 
 type RowData = {
-  key: number
+  id: number
   name: string
   begin: number
   end: string
   price: number
 }
-const createColumns = ({sendMail}: { sendMail: (rowData: RowData) => void }): DataTableColumns<RowData> => {
+const createColumns = ({sendMail}: { sendMail: (rowData: RowData) => void },{delRow}): DataTableColumns<RowData> => {
   return [
-    {
-      type: 'selection'
-    },
     {
       title: '药品名',
       key: 'name'
@@ -49,7 +47,7 @@ const createColumns = ({sendMail}: { sendMail: (rowData: RowData) => void }): Da
               size: 'small',
               type:'error',
               style:'margin-left:6px',
-              onClick: () => sendMail(row)
+              onClick: () => delRow(row)
             },
             { default: () => '删除' }
         )]
@@ -57,7 +55,7 @@ const createColumns = ({sendMail}: { sendMail: (rowData: RowData) => void }): Da
     }
   ]
 }
-const data = [
+const data =ref( [
   {
     key: 0,
     name: '速效救心丸',
@@ -73,7 +71,7 @@ const data = [
     price:'100'
   },
   {
-    key: 2,
+    key:2,
     name: '速效救心丸',
     begin:'2022-6-10',
     end:'2023-6-10',
@@ -92,63 +90,58 @@ const data = [
     begin:'2022-6-10',
     end:'2023-6-10',
     price:'100'
-  },
-  {
-    key: 5,
-    name: '速效救心丸',
-    begin:'2022-6-10',
-    end:'2023-6-10',
-    price:'100'
-  },
-  {
-    key: 6,
-    name: '速效救心丸',
-    begin:'2022-6-10',
-    end:'2023-6-10',
-    price:'100'
-  },
-  {
-    key: 7,
-    name: '速效救心丸',
-    begin:'2022-6-10',
-    end:'2023-6-10',
-    price:'100'
-  },
-  {
-    key: 8,
-    name: '速效救心丸',
-    begin:'2022-6-10',
-    end:'2023-6-10',
-    price:'100'
-  },
-  {
-    key: 9,
-    name: '速效救心丸',
-    begin:'2022-6-10',
-    end:'2023-6-10',
-    price:'100'
-  },
-  {
-    key: 10,
-    name: '速效救心丸',
-    begin:'2022-6-10',
-    end:'2023-6-10',
-    price:'100'
-  },
-  {
-    key: 11,
-    name: '速效救心丸',
-    begin:'2022-6-10',
-    end:'2023-6-10',
-    price:'100'
   }
-]
+])
 const message = useMessage()
+const id = ref(null)
+
 const columns=createColumns({
   sendMail (rowData) {
     message.info('send mail to ' + rowData.name)
   }
+},{
+  delRow(rowData) {
+    showModal.value = true
+    id.value = rowData.id
+  }
 })
+const showModal = ref(false)
+
+function onNegativeClick() {
+  message.success('Cancel')
+  showModal.value = false
+}
+
+function onPositiveClick() {
+  console.log(id.value);
+  axios.get('/health/drug/del', {
+    params: {
+      id: id.value
+    }
+  }).then((res) => {
+    if (res.data.code == 200) {
+      message.success("删除成功");
+      get_info()
+    } else {
+      message.error("删除失败")
+    }
+
+
+  })
+  showModal.value = false
+
+}
+onMounted(() => {
+  get_info()
+})
+const get_info = () => {
+  axios.get('/health/drug').then(res => {
+    console.log(res.data);
+    data.value = res.data.data
+  }).catch((err) => {
+    console.log(err)
+  })
+}
 const store = useStore()
 let town = ref(store.state.town)
 watch(() => store.state.town, (newV, oldV) => {
@@ -156,12 +149,10 @@ watch(() => store.state.town, (newV, oldV) => {
 })
 const pagination = {pageSize: 10}
 const checkedRowKeysRef = ref<[]>([])
-const rowKey=(row:RowData)=>row.key
+const rowKey=(row:RowData)=>row.id
 const handleCheck=(rowKeys:[])=>{
   checkedRowKeysRef.value = rowKeys
-  console.log(checkedRowKeysRef.value)
 }
-
 </script>
 <template>
   <h1 class="title">{{town}}</h1>
@@ -173,6 +164,10 @@ const handleCheck=(rowKeys:[])=>{
         :row-key="rowKey"
         @update:checked-row-keys="handleCheck"/>
   </div>
+  <n-modal v-model:show="showModal" :mask-closable="false" preset="dialog" type="error" title="确认" content="你确认"
+           positive-text="确认" negative-text="取消" @positive-click="onPositiveClick" @negative-click="onNegativeClick">
+    这将会删除数据,且无法恢复!
+  </n-modal>
 </template>
 <style scoped>
 .title{
