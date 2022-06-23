@@ -93,7 +93,7 @@ const columns = createColumns({
 })
 const id = ref(null)
 const get_info = () => {
-  axios.get('/info/elder').then(res => {
+  axios.get('/info/all').then(res => {
     console.log(res.data);
     data.value = res.data.data
   }).catch((err) => {

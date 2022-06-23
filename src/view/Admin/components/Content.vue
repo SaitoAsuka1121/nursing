@@ -112,24 +112,8 @@ function get_data(value:string){
         <div class="search">
           <div class="input">
             <n-space vertical>
-              <n-input-group>
-                <n-input-group-label>{{ input_name }}</n-input-group-label>
-                <n-input
-                  round
-                  placeholder="搜索"
-                  :style="{ width: '33%' }"
-                  :value="value"
-                  :autofocus="true"
-                >
-                  <template #prefix>
-                    <n-icon :component="FlashOutline" />
-                  </template>
-                </n-input>
-              </n-input-group>
+              
             </n-space>
-          </div>
-          <div class="input-button">
-            <n-button>搜索</n-button>
           </div>
           <div class="add-button">
             <div class="add">

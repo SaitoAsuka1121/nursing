@@ -160,6 +160,7 @@ function onPositiveClick  () {
 .add-button {
   position: absolute;
   top: -97px;
+  z-index: 999;
   left: 800px;
 }
 </style>

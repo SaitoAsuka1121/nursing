@@ -14,20 +14,9 @@ const formValue = ref({
     name: '',
     phone: '',
     sex: '',
-    age: null,
-    address: '',
     cases:'',
     relative_phone:''
   }
-})
-const get_case=()=>{
-axios.get('/health/case/').then((res)=>{
-      console.log(res.data.data);
-      
-  })
-}
-onMounted(()=>{
-  
 })
 const rules = {
   user: {
@@ -44,21 +33,7 @@ const rules = {
         })
       }
     },
-    age: {
-      required: true,
-      trigger: 'input',
-      validator: (rule: FormItemRule, value: number) => {
-        return new Promise<void>((resolve, reject) => {
-          setTimeout(() => {
-            if (value <= 60) {
-              reject(Error('非正确年龄'))
-            } else {
-              resolve()
-            }
-          }, 3000)
-        })
-      }
-    },phone: {
+    phone: {
       required: true,
       trigger: 'input',
       validator: (rule: FormItemRule, value: string) => {
@@ -114,10 +89,8 @@ function onPositiveClick  () {
     name: formValue.value.user.name,
     phone: formValue.value.user.phone,
     sex: formValue.value.user.sex,
-    age: formValue.value.user.age,
-    address: formValue.value.user.address,
     cases:formValue.value.user.cases,
-    relative_phone:formValue.value.user.relative_phone
+    re_phone:formValue.value.user.relative_phone
 
   }
   console.log(data)
@@ -126,10 +99,9 @@ function onPositiveClick  () {
   })
   form.value?.validate((errors) => {
     if (!errors) {
-      message.info('正在注册')
-      axios.post("/health/case/add", data).then((res) => {
-        console.log(res)
-        message.success('注册成功')
+      message.info('正在添加')
+      axios.post("/case/add", data).then((res) => {
+        message.success(res.data.data)
       }).catch((err) => {
         console.log(err)
       })
@@ -163,15 +135,6 @@ function onPositiveClick  () {
     >
       <n-form-item label="姓名" path="user.name">
         <n-input v-model:value="formValue.user.name" placeholder="输入姓名"/>
-      </n-form-item>
-      <n-form-item label="年龄" path="user.age">
-        <n-input v-model:value="formValue.user.age" placeholder="输入年龄"/>
-      </n-form-item>
-      <n-form-item label="地址" path="user.address">
-        <n-input
-            v-model:value="formValue.user.address"
-            placeholder="输入地址"
-        />
       </n-form-item>
       <n-form-item label="电话" path="phone">
         <n-input v-model:value="formValue.user.phone" placeholder="输入电话(长)"/>

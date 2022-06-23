@@ -34,10 +34,10 @@ function onPositiveClick  () {
   })
   form.value?.validate((errors) => {
     if (!errors) {
-      message.info('正在注册')
-      axios.post("/health/drug/add", data).then((res) => {
+      message.info('正在添加')
+      axios.post("/drug/add", data).then((res) => {
         console.log(res)
-        message.success('注册成功')
+        message.success('添加成功')
       }).catch((err) => {
         console.log(err)
       })
@@ -89,5 +89,6 @@ function onPositiveClick  () {
   position: absolute;
   top: -97px;
   left: 800px;
+  z-index: 1001;
 }
 </style>

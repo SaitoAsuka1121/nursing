@@ -4,15 +4,16 @@ import type { DataTableColumns } from 'naive-ui'
 import { NButton, NTag, useMessage } from 'naive-ui'
 import { useStore } from 'vuex'
 import axios from "axios";
-
+import { FlashOutline as FlashOutline } from "@vicons/ionicons5";
 type RowData = {
   id: number
   name: string
   age: number
   phone: string
   cases: []
-  relative: string
-  relative_phone: string
+  relative: string,
+  list: [],
+  rePhone: string
 }
 
 const createColumns = ({ sendMail }: { sendMail: (rowData: RowData) => void }, { delRow }): DataTableColumns<RowData> => {
@@ -31,9 +32,9 @@ const createColumns = ({ sendMail }: { sendMail: (rowData: RowData) => void }, {
     },
     {
       title: '病名',
-      key: 'cases',
+      key: 'list',
       render(row) {
-        return row.cases.map((caseKey) => {
+        return (row.list || []).map((caseKey) => {
           return h(
             NTag,
             {
@@ -52,13 +53,13 @@ const createColumns = ({ sendMail }: { sendMail: (rowData: RowData) => void }, {
     },
     {
       title: '紧急联系',
-      key: 'relative_phone'
+      key: 'rePhone'
     },
     {
       title: '操作',
       key: 'actions',
       render(row) {
-        return  h(
+        return h(
           NButton,
           {
             size: 'small',
@@ -72,52 +73,6 @@ const createColumns = ({ sendMail }: { sendMail: (rowData: RowData) => void }, {
   ]
 }
 const data = ref([
-  {
-    id: 1,
-    name: "马小得",
-    age: 67,
-    sex: '男',
-    phone: 11111111111,
-    cases: ['哮喘', '感冒'],
-    relative: "马小溪",
-    relative_phone: 22222222222
-  }, {
-    id: 2,
-    name: "马小得",
-    age: 67,
-    sex: '男',
-    phone: 11111111111,
-    cases: ['哮喘', '感冒'],
-    relative: "马小溪",
-    relative_phone: 22222222222
-  }, {
-    id: 3,
-    name: "马小得",
-    age: 67,
-    sex: '男',
-    phone: 11111111111,
-    cases: ['哮喘', '感冒'],
-    relative: "马小溪",
-    relative_phone: 22222222222
-  }, {
-    id: 4,
-    name: "马小得",
-    age: 67,
-    sex: '男',
-    phone: 11111111111,
-    cases: ['哮喘', '感冒'],
-    relative: "马小溪",
-    relative_phone: 22222222222
-  }, {
-    id: 5,
-    name: "马小得",
-    age: 67,
-    sex: '男',
-    phone: 11111111111,
-    cases: ['哮喘', '感冒'],
-    relative: "马小溪",
-    relative_phone: 22222222222
-  }
 ])
 const id = ref(null)
 const showModal = ref(false)
@@ -129,7 +84,7 @@ function onNegativeClick() {
 
 function onPositiveClick() {
   console.log(id.value);
-  axios.get('/health/case/del', {
+  axios.get('/case/del', {
     params: {
       id: id.value
     }
@@ -151,8 +106,8 @@ onMounted(() => {
   get_info()
 })
 const get_info = () => {
-  axios.get('/health/case').then(res => {
-    console.log(res.data);
+  axios.get('/case/all').then(res => {
+
     data.value = res.data.data
   }).catch((err) => {
     console.log(err)
@@ -175,9 +130,37 @@ let town = ref(store.state.town)
 watch(() => store.state.town, (newV, oldV) => {
   town.value = newV
 })
+const input_value = ref('')
+const search = () => {
+  console.log(input_value.value);
+
+  axios.get('/case/like', {
+    params: {
+      name: input_value.value
+    }
+  }).then(res => {
+
+    data.value = res.data.data
+  }).catch((err) => {
+    console.log(err)
+  })
+
+}
 </script>
 <template>
-  <h1 class="title">{{ town }}</h1>
+  <div class="input">
+    <n-input-group>
+      <n-input-group-label>老人姓名</n-input-group-label>
+      <n-input round placeholder="搜索" :style="{ width: '33%' }" v-model:value="input_value" :autofocus="true">
+        <template #prefix>
+          <n-icon :component="FlashOutline" />
+        </template>
+      </n-input>
+    </n-input-group>
+  </div>
+  <div class="input-button">
+    <n-button @click="search">搜索</n-button>
+  </div>
   <div class="data">
     <n-data-table :columns="columns" :data="data" striped :pagination="pagination" />
   </div>
@@ -195,5 +178,21 @@ watch(() => store.state.town, (newV, oldV) => {
 .data {
   position: relative;
   top: -50px;
+}
+
+.input {
+  position: absolute;
+  top: -96px;
+  left: 193px;
+  width: 1000px;
+  z-index: 999;
+}
+
+.input-button {
+  position: absolute;
+  top: -96px;
+  left: 193px;
+  width: 1000px;
+  z-index: 999;
 }
 </style>
